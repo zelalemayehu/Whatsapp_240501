@@ -1,5 +1,8 @@
 package com.whatsapp.api.backend.service.message;
 
+import com.whatsapp.api.backend.entity.Emoji;
+import com.whatsapp.api.backend.service.dto.EmojiDTO;
+import com.whatsapp.api.backend.service.emoji.EmojiService;
 import com.whatsapp.api.backend.service.util.FileUploadUtil;
 import com.whatsapp.api.backend.exception.BadRequestAlertException;
 import com.whatsapp.api.backend.service.dto.MessageDTO;
@@ -13,24 +16,22 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
 public class MessageServiceImpl implements MessageService{
 
     private final Logger log = LoggerFactory.getLogger(MessageServiceImpl.class);
-
 
     private final MessageRepository messageRepository;
 
@@ -41,6 +42,8 @@ public class MessageServiceImpl implements MessageService{
     private final MultipartConfigElement documentMultipartConfig;
 
     private final MultipartConfigElement videoMultipartConfig;
+
+    private final EmojiService emojiService;
 
 
     @Override
@@ -53,7 +56,18 @@ public class MessageServiceImpl implements MessageService{
 
         Page<Message> messages = messageRepository.findMessagesByReceiverOrSender(sortedByCreatedDate, contactId, contactId);
 
-        return  messages.map(message -> modelMapper.map(message, MessageDTO.class));
+        List<MessageDTO> messageDTOS =messages.stream()
+                .map(message -> {
+                    MessageDTO messageDTO = modelMapper.map(message, MessageDTO.class);
+
+                    Optional<Emoji> emoji= emojiService.getEmoji(message.getId());
+                    EmojiDTO emojiDTO = emoji.isEmpty()?null:modelMapper.map(emoji.get(), EmojiDTO.class);
+                    messageDTO.setEmojiDTO(emojiDTO);
+                    return messageDTO;
+                })
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(messageDTOS, pageable, messages.getTotalElements());
     }
 
     @Override

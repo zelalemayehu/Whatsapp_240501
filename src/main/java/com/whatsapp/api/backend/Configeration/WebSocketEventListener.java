@@ -1,6 +1,6 @@
 package com.whatsapp.api.backend.Configeration;
 
-import com.whatsapp.api.backend.entity.ChatMessage;
+import com.whatsapp.api.backend.common.ChatMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;

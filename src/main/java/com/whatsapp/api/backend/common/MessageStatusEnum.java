@@ -1,4 +1,4 @@
-package com.whatsapp.api.backend.service.enumeration;
+package com.whatsapp.api.backend.common;
 
 public enum MessageStatusEnum {
     New,

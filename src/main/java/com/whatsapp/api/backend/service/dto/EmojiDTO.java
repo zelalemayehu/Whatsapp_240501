@@ -5,29 +5,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class MessageDTO {
-
+public class EmojiDTO {
     private Long id;
-
-    private String content;
-
-    private String messageType;
-
-    private LocalDateTime createdDate;
-
-    private Long sender;
-
-    private Long receiver;
-
-    private String ContactId;
-
-    private String Status;
-
-    private EmojiDTO emojiDTO;
+    private String emoji;
+    private Long messageId;
 }

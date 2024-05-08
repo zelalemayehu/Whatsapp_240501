@@ -1,4 +1,4 @@
-package com.whatsapp.api.backend.entity;
+package com.whatsapp.api.backend.common;
 
 import lombok.*;
 
@@ -17,8 +17,7 @@ public class ChatMessage {
         CHAT, LEAVE, JOIN
     }
 
-
-    public String getContent() {
+        public String getContent() {
         return content;
     }
 
